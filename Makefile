@@ -82,7 +82,7 @@ $(addsuffix .o, $(main_src)) : EXTRA_FLAGS := -Ilibraries $(INC_CFLAGS)
 lib_AltSign:
 	$(MAKE) -C libraries/AltSign
 
-LDFLAGS = libraries/AltSign/AltSign.a -static -lssl -lcrypto -lpthread -lcorecrypto_static -lzip -lm -lz -lcpprest -lboost_system -lboost_filesystem -lstdc++ -lssl -lcrypto -luuid
+LDFLAGS = libraries/AltSign/AltSign.a -lssl -lcrypto -lpthread -lcorecrypto_static -lzip -lm -lz -lcpprest -lboost_system -lboost_filesystem -lstdc++ -lssl -lcrypto -luuid -ldl
 $(PROGRAM):: lib_AltSign
 
 $(PROGRAM):: $(addsuffix .o, $(main_src)) libraries/miniupnp.a libraries/libimobiledevice.a libraries/libplist.a 
