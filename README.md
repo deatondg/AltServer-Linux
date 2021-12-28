@@ -1,3 +1,6 @@
+## Fork
+This is a fork of https://github.com/NyaMisty/AltServer-Linux with a few goals: support for `aarch64`, dynamic linking by default, and eventually a rewrite in Swift. The original `README.md` is below. The information below is not promised to be correct.
+
 # AltServer-Linux
 AltServer for AltStore, but on-device
 
