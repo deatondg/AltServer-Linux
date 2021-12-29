@@ -23,11 +23,8 @@ main_src := $(wildcard src/*.c) $(wildcard src/*.cpp)
 ifdef NO_USBMUXD_STUB
 	CFLAGS += -DNO_USBMUXD_STUB
 else
-	main_src += src/phone/libusbmuxd-stub.c
 	ifdef NO_UPNP_STUB
 		CFLAGS += -DNO_UPNP_STUB
-	else
-		main_src += src/phone/idevice-stub.c
 	endif
 endif
 
