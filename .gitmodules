@@ -1,3 +1,0 @@
-[submodule "libraries/miniupnpc"]
-	path = libraries/miniupnpc
-	url = https://github.com/NyaMisty/minimalupnpc

@@ -31,27 +31,12 @@ else
 	endif
 endif
 
-miniupnpc_src = minissdpc.c miniwget.c minixml.c igd_desc_parse.c minisoap.c \
-		  miniupnpc.c upnpreplyparse.c upnpcommands.c upnperrors.c \
-		  connecthostport.c portlistingparse.c receivedata.c upnpdev.c \
-		  addr_is_reserved.c
-miniupnpc_src := $(miniupnpc_src:%.c=libraries/miniupnpc/%.c)
-miniupnpc_include := -Ilibraries/miniupnpc
-
 INC_CFLAGS := -Ilibraries
-INC_CFLAGS += $(miniupnpc_include)
 INC_CFLAGS += -Ilibraries/AltSign
 
 allsrc := $(main_src) 
-allsrc += $(miniupnpc_src)
 
 allobj = $(addsuffix .o, $(allsrc))
-
-# $(miniupnpc_src:.c=.o) : $(miniupnpc_src)
-# 	$(CC) $(CFLAGS) -Ilibraries -c $<
-$(addsuffix .o, $(miniupnpc_src)) : EXTRA_FLAGS := -Ilibraries $(miniupnpc_include)
-libraries/miniupnp.a : $(addsuffix .o, $(miniupnpc_src))
-	ar rcs $@ $^
 
 $(addsuffix .o, $(main_src)) : EXTRA_FLAGS := -Ilibraries $(INC_CFLAGS)
 
@@ -61,10 +46,10 @@ $(addsuffix .o, $(main_src)) : EXTRA_FLAGS := -Ilibraries $(INC_CFLAGS)
 lib_AltSign:
 	$(MAKE) -C libraries/AltSign
 
-LDFLAGS = libraries/AltSign/AltSign.a -lssl -lcrypto -lpthread -lcorecrypto_static -lzip -lm -lz -lcpprest -lboost_system -lboost_filesystem -lstdc++ -lssl -lcrypto -luuid -ldl -lplist -lusbmuxd -limobiledevice
+LDFLAGS = libraries/AltSign/AltSign.a -lssl -lcrypto -lpthread -lcorecrypto_static -lzip -lm -lz -lcpprest -lboost_system -lboost_filesystem -lstdc++ -lssl -lcrypto -luuid -ldl -lplist -lusbmuxd -limobiledevice -lminiupnpc
 $(PROGRAM):: lib_AltSign
 
-$(PROGRAM):: $(addsuffix .o, $(main_src)) libraries/miniupnp.a
+$(PROGRAM):: $(addsuffix .o, $(main_src))
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 .PHONY: clean all lib_AltSign
