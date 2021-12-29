@@ -20,7 +20,6 @@ CXXFLAGS = $(CFLAGS) -std=c++17
 
 main_src := $(wildcard src/*.c) $(wildcard src/*.cpp)
 
-libimobiledevice_src := $(wildcard libraries/libimobiledevice/src/*.c) $(wildcard libraries/libimobiledevice/common/*.c)
 ifdef NO_USBMUXD_STUB
 	CFLAGS += -DNO_USBMUXD_STUB
 else
@@ -28,12 +27,9 @@ else
 	ifdef NO_UPNP_STUB
 		CFLAGS += -DNO_UPNP_STUB
 	else
-		libimobiledevice_src := $(filter-out libraries/libimobiledevice/src/idevice.c,  $(libimobiledevice_src)) 
 		main_src += src/phone/idevice-stub.c
 	endif
 endif
-
-libimobiledevice_include := -Ilibraries/libimobiledevice/include -Ilibraries/libimobiledevice
 
 miniupnpc_src = minissdpc.c miniwget.c minixml.c igd_desc_parse.c minisoap.c \
 		  miniupnpc.c upnpreplyparse.c upnpcommands.c upnperrors.c \
@@ -43,19 +39,13 @@ miniupnpc_src := $(miniupnpc_src:%.c=libraries/miniupnpc/%.c)
 miniupnpc_include := -Ilibraries/miniupnpc
 
 INC_CFLAGS := -Ilibraries
-INC_CFLAGS += $(libimobiledevice_include)
 INC_CFLAGS += $(miniupnpc_include)
 INC_CFLAGS += -Ilibraries/AltSign
 
 allsrc := $(main_src) 
-allsrc += $(libimobiledevice_src) 
 allsrc += $(miniupnpc_src)
 
 allobj = $(addsuffix .o, $(allsrc))
-
-$(addsuffix .o, $(libimobiledevice_src)) : EXTRA_FLAGS := -Ilibraries $(libimobiledevice_include) -Ilibraries/libimobiledevice/common
-libraries/libimobiledevice.a : $(addsuffix .o, $(libimobiledevice_src))
-	ar rcs $@ $^
 
 # $(miniupnpc_src:.c=.o) : $(miniupnpc_src)
 # 	$(CC) $(CFLAGS) -Ilibraries -c $<
@@ -71,10 +61,10 @@ $(addsuffix .o, $(main_src)) : EXTRA_FLAGS := -Ilibraries $(INC_CFLAGS)
 lib_AltSign:
 	$(MAKE) -C libraries/AltSign
 
-LDFLAGS = libraries/AltSign/AltSign.a -lssl -lcrypto -lpthread -lcorecrypto_static -lzip -lm -lz -lcpprest -lboost_system -lboost_filesystem -lstdc++ -lssl -lcrypto -luuid -ldl -lplist -lusbmuxd
+LDFLAGS = libraries/AltSign/AltSign.a -lssl -lcrypto -lpthread -lcorecrypto_static -lzip -lm -lz -lcpprest -lboost_system -lboost_filesystem -lstdc++ -lssl -lcrypto -luuid -ldl -lplist -lusbmuxd -limobiledevice
 $(PROGRAM):: lib_AltSign
 
-$(PROGRAM):: $(addsuffix .o, $(main_src)) libraries/miniupnp.a libraries/libimobiledevice.a
+$(PROGRAM):: $(addsuffix .o, $(main_src)) libraries/miniupnp.a
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 .PHONY: clean all lib_AltSign
