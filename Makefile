@@ -37,9 +37,6 @@ endif
 
 libimobiledevice_include := -Ilibraries/libimobiledevice/include -Ilibraries/libimobiledevice -Ilibraries/libusbmuxd/include
 
-libplist_src := $(wildcard libraries/libplist/src/*.c) libraries/libplist/libcnary/node.c libraries/libplist/libcnary/node_list.c
-libplist_include := -Ilibraries/libplist/include
-
 miniupnpc_src = minissdpc.c miniwget.c minixml.c igd_desc_parse.c minisoap.c \
 		  miniupnpc.c upnpreplyparse.c upnpcommands.c upnperrors.c \
 		  connecthostport.c portlistingparse.c receivedata.c upnpdev.c \
@@ -49,23 +46,17 @@ miniupnpc_include := -Ilibraries/miniupnpc
 
 INC_CFLAGS := -Ilibraries
 INC_CFLAGS += $(libimobiledevice_include)
-INC_CFLAGS += $(libplist_include)
 INC_CFLAGS += $(miniupnpc_include)
 INC_CFLAGS += -Ilibraries/AltSign
 
 allsrc := $(main_src) 
 allsrc += $(libimobiledevice_src) 
-allsrc += $(libplist_src)
 allsrc += $(miniupnpc_src)
 
 allobj = $(addsuffix .o, $(allsrc))
 
-$(addsuffix .o, $(libimobiledevice_src)) : EXTRA_FLAGS := -Ilibraries $(libimobiledevice_include) $(libplist_include) -Ilibraries/libimobiledevice/common -Ilibraries/libusbmuxd/common
+$(addsuffix .o, $(libimobiledevice_src)) : EXTRA_FLAGS := -Ilibraries $(libimobiledevice_include) -Ilibraries/libimobiledevice/common -Ilibraries/libusbmuxd/common
 libraries/libimobiledevice.a : $(addsuffix .o, $(libimobiledevice_src))
-	ar rcs $@ $^
-
-$(addsuffix .o, $(libplist_src)) : EXTRA_FLAGS := -Ilibraries $(libplist_include) -Ilibraries/libplist/libcnary/include -Ilibraries/libplist/src
-libraries/libplist.a : $(addsuffix .o, $(libplist_src))
 	ar rcs $@ $^
 
 # $(miniupnpc_src:.c=.o) : $(miniupnpc_src)
@@ -82,10 +73,10 @@ $(addsuffix .o, $(main_src)) : EXTRA_FLAGS := -Ilibraries $(INC_CFLAGS)
 lib_AltSign:
 	$(MAKE) -C libraries/AltSign
 
-LDFLAGS = libraries/AltSign/AltSign.a -lssl -lcrypto -lpthread -lcorecrypto_static -lzip -lm -lz -lcpprest -lboost_system -lboost_filesystem -lstdc++ -lssl -lcrypto -luuid -ldl
+LDFLAGS = libraries/AltSign/AltSign.a -lssl -lcrypto -lpthread -lcorecrypto_static -lzip -lm -lz -lcpprest -lboost_system -lboost_filesystem -lstdc++ -lssl -lcrypto -luuid -ldl -lplist
 $(PROGRAM):: lib_AltSign
 
-$(PROGRAM):: $(addsuffix .o, $(main_src)) libraries/miniupnp.a libraries/libimobiledevice.a libraries/libplist.a 
+$(PROGRAM):: $(addsuffix .o, $(main_src)) libraries/miniupnp.a libraries/libimobiledevice.a
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 .PHONY: clean all lib_AltSign
