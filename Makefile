@@ -23,8 +23,6 @@ main_src := $(wildcard src/*.c) $(wildcard src/*.cpp)
 libimobiledevice_src := $(wildcard libraries/libimobiledevice/src/*.c) $(wildcard libraries/libimobiledevice/common/*.c)
 ifdef NO_USBMUXD_STUB
 	CFLAGS += -DNO_USBMUXD_STUB
-	libimobiledevice_src += $(wildcard libraries/libusbmuxd/src/*.c)
-	libimobiledevice_src += $(wildcard libraries/libusbmuxd/common/*.c)
 else
 	main_src += src/phone/libusbmuxd-stub.c
 	ifdef NO_UPNP_STUB
@@ -35,7 +33,7 @@ else
 	endif
 endif
 
-libimobiledevice_include := -Ilibraries/libimobiledevice/include -Ilibraries/libimobiledevice -Ilibraries/libusbmuxd/include
+libimobiledevice_include := -Ilibraries/libimobiledevice/include -Ilibraries/libimobiledevice
 
 miniupnpc_src = minissdpc.c miniwget.c minixml.c igd_desc_parse.c minisoap.c \
 		  miniupnpc.c upnpreplyparse.c upnpcommands.c upnperrors.c \
@@ -55,7 +53,7 @@ allsrc += $(miniupnpc_src)
 
 allobj = $(addsuffix .o, $(allsrc))
 
-$(addsuffix .o, $(libimobiledevice_src)) : EXTRA_FLAGS := -Ilibraries $(libimobiledevice_include) -Ilibraries/libimobiledevice/common -Ilibraries/libusbmuxd/common
+$(addsuffix .o, $(libimobiledevice_src)) : EXTRA_FLAGS := -Ilibraries $(libimobiledevice_include) -Ilibraries/libimobiledevice/common
 libraries/libimobiledevice.a : $(addsuffix .o, $(libimobiledevice_src))
 	ar rcs $@ $^
 
@@ -73,7 +71,7 @@ $(addsuffix .o, $(main_src)) : EXTRA_FLAGS := -Ilibraries $(INC_CFLAGS)
 lib_AltSign:
 	$(MAKE) -C libraries/AltSign
 
-LDFLAGS = libraries/AltSign/AltSign.a -lssl -lcrypto -lpthread -lcorecrypto_static -lzip -lm -lz -lcpprest -lboost_system -lboost_filesystem -lstdc++ -lssl -lcrypto -luuid -ldl -lplist
+LDFLAGS = libraries/AltSign/AltSign.a -lssl -lcrypto -lpthread -lcorecrypto_static -lzip -lm -lz -lcpprest -lboost_system -lboost_filesystem -lstdc++ -lssl -lcrypto -luuid -ldl -lplist -lusbmuxd
 $(PROGRAM):: lib_AltSign
 
 $(PROGRAM):: $(addsuffix .o, $(main_src)) libraries/miniupnp.a libraries/libimobiledevice.a
