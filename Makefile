@@ -52,6 +52,7 @@ $(PROGRAM):: $(addsuffix .o, $(main_src))
 .PHONY: clean all lib_AltSign
 clean:
 	rm -f $(allobj) libraries/*.a $(PROGRAM)
+	$(MAKE) -C libraries/AltSign clean
 
 all: $(PROGRAM)
 .DEFAULT_GOAL := all
