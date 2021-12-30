@@ -19,7 +19,7 @@ src/AltServerMain.cpp.o: src/AltServerMain.cpp
 src/AltServerUPnPMain.cpp.o: src/AltServerMain.cpp
 	$(CXX) $(CXXFLAGS) -DNO_UPNP_STUB $(INC_CFLAGS) -o $@ -c $^
 src/AltServerNetMain.cpp.o: src/AltServerMain.cpp
-	$(CXX) $(CXXFLAGS) $(PROGRAM_CFLAGS) $(INC_CFLAGS) -o $@ -c $^
+	$(CXX) $(CXXFLAGS) $(INC_CFLAGS) -o $@ -c $^
 
 lib_AltSign:
 	$(MAKE) -C libraries/AltSign
