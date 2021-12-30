@@ -790,7 +790,7 @@ pplx::task<std::shared_ptr<Device>> AltServerApp::RegisterDevice(std::shared_ptr
               
               for (auto tempDevice : devices)
               {
-				  odslog("Comparing  device: " << tempDevice << "with " << device);
+				  odslog("Comparing  device: " << tempDevice << " (" << tempDevice->identifier() << ")  with " << device << " (" << device->identifier() << ")");
                   if (tempDevice->identifier() == device->identifier())
                   {
                       matchingDevice = tempDevice;
