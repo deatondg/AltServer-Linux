@@ -8,15 +8,17 @@ else
 	endif
 endif
 
-
-%.c.o : %.c
-	$(CC) $(CFLAGS) $(EXTRA_FLAGS) -o $@ -c $<
-
-%.cpp.o : %.cpp
-	$(CXX) $(CXXFLAGS) $(EXTRA_FLAGS) -o $@ -c $<
-
 CFLAGS := -DHAVE_CONFIG_H -DDEBUG -O0 -g
 CXXFLAGS = $(CFLAGS) -std=c++17
+INC_CFLAGS := -Ilibraries -Ilibraries/AltSign
+LDFLAGS = libraries/AltSign/AltSign.a -lssl -lcrypto -lpthread -lcorecrypto_static -lzip -lm -lz -lcpprest -lboost_system -lboost_filesystem -lstdc++ -lssl -lcrypto -luuid -ldl -lplist -lusbmuxd -limobiledevice -lminiupnpc
+
+%.c.o : %.c
+	$(CC) $(CFLAGS) $(INC_CFLAGS) -o $@ -c $<
+
+%.cpp.o : %.cpp
+	$(CXX) $(CXXFLAGS) $(INC_CFLAGS) -o $@ -c $<
+
 
 main_src := $(wildcard src/*.c) $(wildcard src/*.cpp)
 
@@ -28,22 +30,14 @@ else
 	endif
 endif
 
-INC_CFLAGS := -Ilibraries
-INC_CFLAGS += -Ilibraries/AltSign
 
 allsrc := $(main_src) 
 
 allobj = $(addsuffix .o, $(allsrc))
 
-$(addsuffix .o, $(main_src)) : EXTRA_FLAGS := -Ilibraries $(INC_CFLAGS)
-
-#%.o : %.c
-#	$(CC) $(CFLAGS) $(INC_CFLAGS) -c $< -o $@
-
 lib_AltSign:
 	$(MAKE) -C libraries/AltSign
 
-LDFLAGS = libraries/AltSign/AltSign.a -lssl -lcrypto -lpthread -lcorecrypto_static -lzip -lm -lz -lcpprest -lboost_system -lboost_filesystem -lstdc++ -lssl -lcrypto -luuid -ldl -lplist -lusbmuxd -limobiledevice -lminiupnpc
 $(PROGRAM):: lib_AltSign
 
 $(PROGRAM):: $(addsuffix .o, $(main_src))
